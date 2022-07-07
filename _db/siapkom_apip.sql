@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 21 Jun 2022 pada 14.13
+-- Waktu pembuatan: 07 Jul 2022 pada 11.29
 -- Versi server: 5.7.33
 -- Versi PHP: 7.4.29
 
@@ -40,8 +40,15 @@ CREATE TABLE `anggaran` (
 --
 
 INSERT INTO `anggaran` (`id_anggaran`, `id_peserta`, `anggaran`, `created_at`, `updated_at`) VALUES
-(1, 2, '10000000', '2022-06-21 10:02:20', '2022-06-21 10:02:20'),
-(2, 3, '10000000', '2022-06-21 14:08:12', '2022-06-21 14:08:12');
+(1, 1, '0', '2022-07-06 15:57:25', '2022-07-06 15:57:25'),
+(2, 2, '0', '2022-07-07 10:55:31', '2022-07-07 10:55:31'),
+(3, 3, '0', '2022-07-07 10:59:46', '2022-07-07 10:59:46'),
+(4, 4, '0', '2022-07-07 11:02:08', '2022-07-07 11:02:08'),
+(5, 5, '0', '2022-07-07 11:05:55', '2022-07-07 11:05:55'),
+(6, 6, '0', '2022-07-07 11:11:52', '2022-07-07 11:11:52'),
+(7, 7, '0', '2022-07-07 11:15:28', '2022-07-07 11:15:28'),
+(8, 8, '0', '2022-07-07 11:22:16', '2022-07-07 11:22:16'),
+(9, 9, '0', '2022-07-07 11:27:42', '2022-07-07 11:27:42');
 
 -- --------------------------------------------------------
 
@@ -56,15 +63,6 @@ CREATE TABLE `bezeting` (
   `abk` int(11) DEFAULT '0',
   `keterangan` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data untuk tabel `bezeting`
---
-
-INSERT INTO `bezeting` (`id_bezeting`, `id_jabatan`, `tahun`, `abk`, `keterangan`) VALUES
-(1, 19, '2022', 12, NULL),
-(2, 12, '2022', 12, NULL),
-(3, 7, '2022', 15, 'coba');
 
 -- --------------------------------------------------------
 
@@ -251,8 +249,15 @@ CREATE TABLE `peserta` (
 --
 
 INSERT INTO `peserta` (`id_peserta`, `id_pegawai`, `id_jenis_diklat`, `id_diklat`, `tahun`, `tgl_mulai`, `tgl_selesai`, `tempat`, `id_status`, `keterangan`, `created_at`, `updated_at`) VALUES
-(2, 121, 1, 2, '2022', '2022-06-20', '2022-06-28', 'Jakarta', 3, 'Diklat Selesai', '2022-06-20 15:47:31', '2022-06-21 10:27:20'),
-(3, 121, 2, 19, '2022', '2022-06-21', '2022-06-22', 'Serang', 3, 'Diklat Selesai', '2022-06-21 14:00:02', '2022-06-21 14:13:08');
+(1, 58, 2, 26, '2021', '2021-04-05', '2021-04-09', 'Ciawi', 3, 'Diklat Selesai', '2022-07-06 15:52:41', '2022-07-06 15:57:49'),
+(2, 46, 2, 26, '2021', '2021-04-05', '2021-04-09', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 10:54:31', '2022-07-07 10:55:50'),
+(3, 49, 2, 18, '2021', '2021-06-28', '2021-07-02', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 10:58:27', '2022-07-07 11:00:33'),
+(4, 57, 2, 18, '2021', '2021-06-28', '2021-07-02', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 11:01:26', '2022-07-07 11:02:35'),
+(5, 64, 2, 25, '2021', '2021-06-08', '2021-07-11', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 11:05:02', '2022-07-07 11:06:26'),
+(6, 66, 2, 31, '2021', '2021-09-20', '2021-09-24', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 11:11:17', '2022-07-07 11:12:28'),
+(7, 74, 2, 21, '2021', '2021-11-15', '2021-11-19', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 11:14:36', '2022-07-07 11:15:42'),
+(8, 68, 2, 18, '2021', '2021-06-28', '2021-07-02', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 11:21:40', '2022-07-07 11:23:08'),
+(9, 95, 2, 31, '2021', '2021-04-05', '2021-04-09', 'Ciawi', 3, 'Diklat Selesai', '2022-07-07 11:27:13', '2022-07-07 11:28:11');
 
 -- --------------------------------------------------------
 
@@ -274,8 +279,15 @@ CREATE TABLE `realisasi` (
 --
 
 INSERT INTO `realisasi` (`id_realisasi`, `id_peserta`, `no_spt`, `file_spt`, `created_at`, `updated_at`) VALUES
-(1, 2, '12345678', '1655803155.pdf', '2022-06-21 09:19:15', '2022-06-21 09:19:15'),
-(2, 3, '12345678', '1655820467.pdf', '2022-06-21 14:07:47', '2022-06-21 14:07:47');
+(1, 1, '2021-1', '1657122947.pdf', '2022-07-06 15:55:47', '2022-07-06 15:55:47'),
+(2, 2, '2021-2', '1657191322.pdf', '2022-07-07 10:55:22', '2022-07-07 10:55:22'),
+(3, 3, '2021-3', '1657191545.pdf', '2022-07-07 10:59:05', '2022-07-07 10:59:05'),
+(4, 4, '2021-4', '1657191713.pdf', '2022-07-07 11:01:53', '2022-07-07 11:01:53'),
+(5, 5, '2021-5', '1657191924.pdf', '2022-07-07 11:05:24', '2022-07-07 11:05:24'),
+(6, 6, '2021-6', '1657192306.pdf', '2022-07-07 11:11:46', '2022-07-07 11:11:46'),
+(7, 7, '2021-7', '1657192518.pdf', '2022-07-07 11:15:18', '2022-07-07 11:15:18'),
+(8, 8, '2021-7', '1657192928.pdf', '2022-07-07 11:22:08', '2022-07-07 11:22:08'),
+(9, 9, '2021-8', '1657193255.pdf', '2022-07-07 11:27:35', '2022-07-07 11:27:35');
 
 -- --------------------------------------------------------
 
@@ -323,7 +335,8 @@ INSERT INTO `ref_diklat` (`id_diklat`, `id_jenis_diklat`, `nama_diklat`) VALUES
 (27, 2, 'REVIU RPJMD (P2UPD)'),
 (28, 2, 'REVIU LKPD (P2UPD)'),
 (29, 2, 'EKPPD PEMDA (P2UPD)'),
-(30, 3, 'PKS, SEMINAR, WEBINAR, SOSIALISASI, BIMTEK, DLL');
+(30, 3, 'PKS, SEMINAR, WEBINAR, SOSIALISASI, BIMTEK, DLL'),
+(31, 2, 'AUDIT INVESTIGATIF');
 
 -- --------------------------------------------------------
 
@@ -522,8 +535,15 @@ CREATE TABLE `sertifikat` (
 --
 
 INSERT INTO `sertifikat` (`id_sertifikat`, `id_peserta`, `file_sertifikat`, `created_at`, `updated_at`) VALUES
-(1, 2, '1655806774.pdf', '2022-06-21 10:19:34', '2022-06-21 10:19:34'),
-(2, 3, '1655820738.pdf', '2022-06-21 14:12:18', '2022-06-21 14:12:18');
+(1, 1, '1657123059.pdf', '2022-07-06 15:57:39', '2022-07-06 15:57:39'),
+(2, 2, '1657191344.pdf', '2022-07-07 10:55:44', '2022-07-07 10:55:44'),
+(3, 3, '1657191597.pdf', '2022-07-07 10:59:57', '2022-07-07 10:59:57'),
+(4, 4, '1657191744.pdf', '2022-07-07 11:02:24', '2022-07-07 11:02:24'),
+(5, 5, '1657191973.pdf', '2022-07-07 11:06:13', '2022-07-07 11:06:13'),
+(6, 6, '1657192339.pdf', '2022-07-07 11:12:19', '2022-07-07 11:12:19'),
+(7, 7, '1657192536.pdf', '2022-07-07 11:15:36', '2022-07-07 11:15:36'),
+(8, 8, '1657192974.pdf', '2022-07-07 11:22:54', '2022-07-07 11:22:54'),
+(9, 9, '1657193285.pdf', '2022-07-07 11:28:05', '2022-07-07 11:28:05');
 
 -- --------------------------------------------------------
 
@@ -807,13 +827,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `anggaran`
 --
 ALTER TABLE `anggaran`
-  MODIFY `id_anggaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_anggaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `bezeting`
 --
 ALTER TABLE `bezeting`
-  MODIFY `id_bezeting` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_bezeting` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `pegawai`
@@ -825,19 +845,19 @@ ALTER TABLE `pegawai`
 -- AUTO_INCREMENT untuk tabel `peserta`
 --
 ALTER TABLE `peserta`
-  MODIFY `id_peserta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_peserta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `realisasi`
 --
 ALTER TABLE `realisasi`
-  MODIFY `id_realisasi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_realisasi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `ref_diklat`
 --
 ALTER TABLE `ref_diklat`
-  MODIFY `id_diklat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_diklat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT untuk tabel `ref_golongan`
@@ -885,7 +905,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT untuk tabel `sertifikat`
 --
 ALTER TABLE `sertifikat`
-  MODIFY `id_sertifikat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_sertifikat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
