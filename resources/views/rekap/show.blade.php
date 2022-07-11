@@ -50,11 +50,7 @@
                         </tr>
                         <tr>
                             <td>Nama Diklat</td>
-                            <td>{{ $peserta->diklat ? $peserta->diklat->nama_diklat : '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Jenis Diklat</td>
-                            <td>{{ $peserta->jenisDiklat ? $peserta->jenisDiklat->nama_jenis_diklat : '' }}</td>
+                            <td>{{ $peserta->nama_diklat }}</td>
                         </tr>
                         <tr>
                             <td>Tahun</td>
@@ -63,14 +59,22 @@
                         <tr>
                             <td>Tanggal Mulai</td>
                             <td>
-                                {{ \Carbon\Carbon::parse($peserta->tgl_mulai)->isoFormat('D-MM-Y') }}
+                                {{ \Carbon\Carbon::parse($peserta->tgl_mulai)->isoFormat('D MMMM Y') }}
                             </td>
                         </tr>
                         <tr>
                             <td>Tanggal Selesai</td>
                             <td>
-                                {{ \Carbon\Carbon::parse($peserta->tgl_selesai)->isoFormat('D-MM-Y') }}
+                                {{ \Carbon\Carbon::parse($peserta->tgl_selesai)->isoFormat('D MMMM Y') }}
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Tempat</td>
+                            <td>{{ $peserta->tempat }}</td>
+                        </tr>
+                        <tr>
+                            <td>Jam Pelatihan</td>
+                            <td>{{ $peserta->jam_pelatihan }} Jam</td>
                         </tr>
                         <tr>
                             <td>No Surat Perintah Tugas</td>
@@ -94,7 +98,7 @@
                             <td>Anggaran Diklat</td>
                             <td>
                                 <span
-                                    class="{{ $peserta->anggaran ? '' : 'text-danger' }}">{{ $peserta->anggaran ? 'Rp. ' . number_format($peserta->anggaran->anggaran, 2, ',', '.') : 'Belum dianggarkan' }}</span>
+                                    class="{{ $peserta->realisasi ? '' : 'text-danger' }}">{{ $peserta->realisasi ? 'Rp. ' . number_format($peserta->realisasi->anggaran, 2, ',', '.') : 'Belum dianggarkan' }}</span>
                             </td>
                         </tr>
                         <tr>
@@ -120,10 +124,6 @@
                                 <span
                                     class="badge bg-{{ $peserta->status->color }}">{{ $peserta->status->nama_status }}</span>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Keterangan</td>
-                            <td>{{ $peserta->keterangan }}</td>
                         </tr>
                     </tbody>
                 </table>

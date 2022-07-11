@@ -14,7 +14,7 @@ class DiklatController extends Controller
      */
     public function index()
     {
-        $data = RefDiklat::orderBy('id_jenis_diklat', 'asc')->get();
+        $data = RefDiklat::where('id_diklat', '!=', '1')->orderBy('nama_diklat', 'asc')->get();
         return view('diklat.index', compact('data'));
     }
 
@@ -43,7 +43,7 @@ class DiklatController extends Controller
 
         RefDiklat::create([
             'id_jenis_diklat' => $request->id_jenis_diklat,
-            'nama_diklat' => $request->nama_diklat,
+            'nama_diklat' => strtoupper($request->nama_diklat),
         ]);
 
         return redirect()->route('diklat.index')->with('success', 'Berhasil disimpan!');
@@ -93,7 +93,7 @@ class DiklatController extends Controller
 
         $diklat->update([
             'id_jenis_diklat' => $request->id_jenis_diklat,
-            'nama_diklat' => $request->nama_diklat,
+            'nama_diklat' => strtoupper($request->nama_diklat),
         ]);
 
         return redirect()->route('diklat.index')->with('success', 'Berhasil disimpan!');

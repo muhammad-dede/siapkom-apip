@@ -55,7 +55,7 @@ class RekapController extends Controller
                     return $data->tahun;
                 })
                 ->addColumn('diklat', function ($data) {
-                    return $data->diklat->nama_diklat;
+                    return $data->nama_diklat;
                 })
                 ->addColumn('opsi', function ($data) {
                     return '<a href="' . route('rekap.detail', $data->id_peserta) . '"class="btn btn-sm btn-info">Detail</a>';

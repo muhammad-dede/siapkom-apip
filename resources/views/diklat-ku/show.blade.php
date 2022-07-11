@@ -9,7 +9,7 @@
                 <h4 class="fw-bold">Detail Diklat</h4>
             </div>
             <div class="col-auto">
-                @if ($peserta->realisasi && $peserta->anggaran && !$peserta->sertifikat)
+                @if ($peserta->id_status === 2)
                     <button id="btn-sertifikat" type="button" class="btn btn-primary me-2">Upload Sertifikat</button>
                 @endif
                 <a href="{{ route('diklatku.index') }}" class="btn btn-outline-secondary">Kembali</a>
@@ -32,7 +32,9 @@
                         </tr>
                         <tr>
                             <td>Nama</td>
-                            <td>{{ $peserta->pegawai ? $peserta->pegawai->nama_pegawai : '' }}</td>
+                            <td>
+                                <strong>{{ $peserta->pegawai ? $peserta->pegawai->nama_pegawai : '' }}</strong>
+                            </td>
                         </tr>
                         <tr>
                             <td>NIP</td>
@@ -59,11 +61,7 @@
                         </tr>
                         <tr>
                             <td>Nama Diklat</td>
-                            <td>{{ $peserta->diklat ? $peserta->diklat->nama_diklat : '' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Jenis Diklat</td>
-                            <td>{{ $peserta->jenisDiklat ? $peserta->jenisDiklat->nama_jenis_diklat : '' }}</td>
+                            <td><strong>{{ $peserta->nama_diklat }}</strong></td>
                         </tr>
                         <tr>
                             <td>Tahun</td>
@@ -72,14 +70,22 @@
                         <tr>
                             <td>Tanggal Mulai</td>
                             <td>
-                                {{ \Carbon\Carbon::parse($peserta->tgl_mulai)->isoFormat('D-MM-Y') }}
+                                {{ \Carbon\Carbon::parse($peserta->tgl_mulai)->isoFormat('D MMMM Y') }}
                             </td>
                         </tr>
                         <tr>
                             <td>Tanggal Selesai</td>
                             <td>
-                                {{ \Carbon\Carbon::parse($peserta->tgl_selesai)->isoFormat('D-MM-Y') }}
+                                {{ \Carbon\Carbon::parse($peserta->tgl_selesai)->isoFormat('D MMMM Y') }}
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Tempat</td>
+                            <td>{{ $peserta->tempat }}</td>
+                        </tr>
+                        <tr>
+                            <td>Jam Pelatihan</td>
+                            <td>{{ $peserta->jam_pelatihan }} Jam</td>
                         </tr>
                         <tr>
                             <td>No Surat Perintah Tugas</td>
@@ -103,7 +109,7 @@
                             <td>Anggaran Diklat</td>
                             <td>
                                 <span
-                                    class="{{ $peserta->anggaran ? '' : 'text-danger' }}">{{ $peserta->anggaran ? 'Rp. ' . number_format($peserta->anggaran->anggaran, 2, ',', '.') : 'Belum dianggarkan' }}</span>
+                                    class="{{ $peserta->realisasi ? '' : 'text-danger' }}">{{ $peserta->realisasi ? 'Rp. ' . number_format($peserta->realisasi->anggaran, 2, ',', '.') : 'Belum dianggarkan' }}</span>
                             </td>
                         </tr>
                         <tr>
@@ -120,7 +126,7 @@
                         <tr>
                             <td colspan="2">
                                 <br>
-                                <h5>Status</h5>
+                                <h5>Status Peserta</h5>
                             </td>
                         </tr>
                         <tr>
@@ -129,10 +135,6 @@
                                 <span
                                     class="badge bg-{{ $peserta->status->color }}">{{ $peserta->status->nama_status }}</span>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Keterangan</td>
-                            <td>{{ $peserta->keterangan }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -147,8 +149,9 @@
                     <h5 class="modal-title" id="modal-title">Upload Sertifikat</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="form-sertifikat" action="{{ route('diklatku.store.sertifikat', $peserta->id_peserta) }}"
-                    method="POST" enctype="multipart/form-data">
+                <form id="form-sertifikat" class="form"
+                    action="{{ route('diklatku.sertifikat', $peserta->id_peserta) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="row">

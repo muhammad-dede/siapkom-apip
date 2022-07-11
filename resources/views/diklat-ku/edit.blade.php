@@ -23,51 +23,64 @@
                             method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('put')
-                            <div class="mb-3">
-                                <label for="id_jenis_diklat" class="form-label">Jenis Diklat</label>
-                                <select class="form-select" id="id_jenis_diklat" aria-label="Pilih" name="id_jenis_diklat">
-                                    <option value=""></option>
-                                    @foreach (refJenisDiklat() as $row)
-                                        <option value="{{ $row->id_jenis_diklat }}"
-                                            {{ $peserta->id_jenis_diklat == $row->id_jenis_diklat ? 'selected' : '' }}>
-                                            {{ $row->nama_jenis_diklat }}
+                            <div class="peserta">
+                                <div class="mb-3">
+                                    <label for="id_diklat" class="form-label">Diklat</label>
+                                    <select class="form-select select2" id="id_diklat" aria-label="Pilih" name="id_diklat">
+                                        <option value="" selected></option>
+                                        @foreach (refDiklat() as $row)
+                                            @if ($row->id_diklat !== 1)
+                                                <option value="{{ $row->id_diklat }}"
+                                                    {{ $peserta->id_diklat == $row->id_diklat ? 'selected' : '' }}>
+                                                    {{ $row->nama_diklat }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                        <option value="1" {{ $peserta->id_diklat == 1 ? 'selected' : '' }}>LAINNYA
                                         </option>
-                                    @endforeach
-                                </select>
-                                <small>Pilih jenis diklat untuk menampilkan nama diklat.</small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="id_diklat" class="form-label">Nama Diklat</label>
-                                <select class="form-select select2" id="id_diklat" aria-label="Pilih" name="id_diklat">
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tahun" class="form-label">Tahun</label>
-                                <select class="form-select" id="tahun" aria-label="Pilih" name="tahun">
-                                    <option value=""></option>
-                                    @foreach (getTahun() as $row)
-                                        <option value="{{ $row['tahun'] }}"
-                                            {{ $peserta->tahun == $row['tahun'] ? 'selected' : '' }}>
-                                            {{ $row['tahun'] }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <label for="tgl_mulai" class="form-label">Tanggal Mulai</label>
-                                    <input type="date" class="form-control" id="tgl_mulai" name="tgl_mulai"
-                                        value="{{ $peserta->tgl_mulai }}" />
+                                    </select>
                                 </div>
-                                <div class="col">
-                                    <label for="tgl_selesai" class="form-label">Tanggal Selesai</label>
-                                    <input type="date" class="form-control" id="tgl_selesai" name="tgl_selesai"
-                                        value="{{ $peserta->tgl_selesai }}" />
+                                <div class="mb-3" id="diklat_lainnya">
+                                    <label for="nama_diklat" class="form-label">Nama Diklat</label>
+                                    <input type="text" class="form-control" id="nama_diklat" name="nama_diklat"
+                                        value="{{ $peserta->nama_diklat }}" />
                                 </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="tempat" class="form-label">Tempat</label>
-                                <textarea class="form-control" name="tempat" id="tempat" cols="30" rows="3">{{ $peserta->tempat }}</textarea>
+                                <div class="mb-3">
+                                    <label for="tahun" class="form-label">Tahun</label>
+                                    <select class="form-select" id="tahun" aria-label="Pilih" name="tahun">
+                                        <option value=""></option>
+                                        @foreach (getTahun() as $row)
+                                            <option value="{{ $row['tahun'] }}"
+                                                {{ $peserta->tahun == $row['tahun'] ? 'selected' : '' }}>
+                                                {{ $row['tahun'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <label for="tgl_mulai" class="form-label">Tanggal Mulai</label>
+                                        <input type="date" class="form-control" id="tgl_mulai" name="tgl_mulai"
+                                            value="{{ $peserta->tgl_mulai }}" />
+                                    </div>
+                                    <div class="col">
+                                        <label for="tgl_selesai" class="form-label">Tanggal Selesai</label>
+                                        <input type="date" class="form-control" id="tgl_selesai" name="tgl_selesai"
+                                            value="{{ $peserta->tgl_selesai }}" />
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <label for="tempat" class="form-label">Tempat</label>
+                                        <input type="text" class="form-control" id="tempat" name="tempat"
+                                            value="{{ $peserta->tempat }}" />
+                                    </div>
+                                    <div class="col">
+                                        <label for="jam_pelatihan" class="form-label">Jam Pelatihan</label>
+                                        <input type="number" class="form-control" id="jam_pelatihan" name="jam_pelatihan"
+                                            value="{{ $peserta->jam_pelatihan }}" />
+                                    </div>
+                                </div>
                             </div>
                             <div class="mt-3 border-top py-3">
                                 <button type="submit" id="btn-simpan" class="btn btn-primary me-2">Simpan</button>
@@ -89,44 +102,20 @@
                 width: '100%'
             });
 
-            data_diklat();
+            diklat_lainnya();
 
-            $("#id_jenis_diklat").on("change", function() {
-                data_diklat();
-            });
-
-            function data_diklat() {
-                var id_jenis_diklat = $("#id_jenis_diklat").val();
-                var id_diklat = "{{ $peserta->id_diklat }}";
-                if (id_jenis_diklat == "") {
-                    $("#id_diklat").prop('disabled', 'disabled');
-                    $('#id_diklat').empty();
+            function diklat_lainnya() {
+                var id_diklat = $("#id_diklat").val();
+                if (id_diklat === '1') {
+                    $('#diklat_lainnya').show();
                 } else {
-                    $("#id_diklat").prop('disabled', false);;
-                    $.ajax({
-                        url: "{{ route('diklatku.edit', $peserta->id_peserta) }}",
-                        method: "GET",
-                        data: {
-                            id_jenis_diklat: id_jenis_diklat
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            if (response) {
-                                $('#id_diklat').empty();
-                                $('#id_diklat').append('<option hidden></option>');
-                                $.each(response, function(key, diklat) {
-                                    $('#id_diklat').append(`
-                                        <option value="` + diklat.id_diklat + `" ` + (diklat.id_diklat == id_diklat ?
-                                        `selected` : ``) + `>` + diklat.nama_diklat + `</option>
-                                    `);
-                                });
-                            } else {
-                                $('#id_diklat').empty();
-                            }
-                        }
-                    });
+                    $('#diklat_lainnya').hide();
                 }
             }
+
+            $('#id_diklat').on("change", function() {
+                diklat_lainnya();
+            });
 
             $("#form-edit-diklatku").on("submit", function(event) {
                 event.preventDefault();

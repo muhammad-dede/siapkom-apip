@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Peserta;
 use App\Models\RefDiklat;
+use App\Models\RefJenisDiklat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
 class PesertaController extends Controller
@@ -16,8 +18,7 @@ class PesertaController extends Controller
      */
     public function index()
     {
-        $data = Peserta::with(['pegawai', 'jenisDiklat', 'diklat'])->where('id_status', 1)->orderBy('created_at', 'desc')->get();
-        return view('peserta.index', compact('data'));
+        return view('peserta.index');
     }
 
     /**
@@ -27,13 +28,6 @@ class PesertaController extends Controller
      */
     public function create(Request $request)
     {
-        if ($request->ajax()) {
-            if ($request->id_jenis_diklat) {
-                $data = RefDiklat::where('id_jenis_diklat', $request->id_jenis_diklat)->get();
-                return response()->json($data);
-            }
-        }
-
         return view('peserta.create');
     }
 
@@ -48,27 +42,31 @@ class PesertaController extends Controller
         if ($request->ajax()) {
             $validator = Validator::make($request->all(), [
                 'id_pegawai' => 'required|string',
-                'tahun' => 'required|string|max:5',
-                'id_jenis_diklat' => 'required|string',
                 'id_diklat' => 'required|string',
+                'nama_diklat' => $request->id_diklat == 1 ? 'required|string|max:255' : 'nullable|string|max:255',
+                'tahun' => 'required|string|max:5',
                 'tgl_mulai' => 'required|date',
                 'tgl_selesai' => 'required|date|after_or_equal:tgl_mulai',
                 'tempat'    => 'required|string|max:255',
+                'jam_pelatihan'    => 'required|numeric',
             ]);
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()->toArray()]);
             }
 
+            $diklat = RefDiklat::findOrFail($request->id_diklat);
+
             Peserta::create([
                 'id_pegawai' => $request->id_pegawai,
-                'id_jenis_diklat' => $request->id_jenis_diklat,
-                'id_diklat' => $request->id_diklat,
+                'id_jenis_diklat' => $diklat->id_jenis_diklat,
+                'id_diklat' => $diklat->id_diklat,
+                'nama_diklat' => $diklat->id_diklat === 1 ? strtoupper($request->nama_diklat) : $diklat->nama_diklat,
                 'tahun' => $request->tahun,
                 'tgl_mulai' => $request->tgl_mulai,
                 'tgl_selesai' => $request->tgl_selesai,
                 'tempat' => $request->tempat,
+                'jam_pelatihan' => $request->jam_pelatihan,
                 'id_status' => 1,
-                'keterangan' => 'Verifikasi Pendaftaran',
             ]);
 
             return response()->json(['success' => 'Successfully']);
@@ -86,7 +84,7 @@ class PesertaController extends Controller
     public function show($id)
     {
         $peserta = Peserta::findOrFail($id);
-        if (!$peserta || $peserta->id_status !== 1) {
+        if (!$peserta) {
             return abort('404');
         }
 
@@ -102,15 +100,8 @@ class PesertaController extends Controller
     public function edit(Request $request, $id)
     {
         $peserta = Peserta::findOrFail($id);
-        if (!$peserta || $peserta->id_status !== 1) {
+        if (!$peserta) {
             return abort('404');
-        }
-
-        if ($request->ajax()) {
-            if ($request->id_jenis_diklat) {
-                $data = RefDiklat::where('id_jenis_diklat', $request->id_jenis_diklat)->get();
-                return response()->json($data);
-            }
         }
 
         return view('peserta.edit', compact('peserta'));
@@ -127,29 +118,79 @@ class PesertaController extends Controller
     {
         if ($request->ajax()) {
 
+            $peserta = Peserta::findOrFail($id);
+
             $validator = Validator::make($request->all(), [
                 'id_pegawai' => 'required|string',
-                'tahun' => 'required|string|max:5',
-                'id_jenis_diklat' => 'required|string',
                 'id_diklat' => 'required|string',
+                'nama_diklat' => $request->id_diklat == 1 ? 'required|string|max:255' : 'nullable|string|max:255',
+                'tahun' => 'required|string|max:5',
                 'tgl_mulai' => 'required|date',
                 'tgl_selesai' => 'required|date|after_or_equal:tgl_mulai',
                 'tempat'    => 'required|string|max:255',
+                'jam_pelatihan'    => 'required|numeric',
+                'no_spt' => $peserta->realisasi ? 'required|string|max:255' : 'nullable|string|max:255',
+                'file_spt' => $peserta->realisasi ? 'nullable|max:2048|mimes:pdf' : 'nullable|max:2048|mimes:pdf',
+                'anggaran' => $peserta->realisasi ? 'required|numeric' : 'nullable|numeric',
+                'file_sertifikat' => $peserta->sertifikat ? 'nullable|max:2048|mimes:pdf' : 'nullable|max:2048|mimes:pdf',
+                'keterangan' => $peserta->keteranganTolak ? 'required|string|max:255' : 'nullable|string|max:255',
             ]);
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()->toArray()]);
             }
 
-            $peserta = Peserta::findOrFail($id);
+            $diklat = RefDiklat::findOrFail($request->id_diklat);
+
             $peserta->update([
                 'id_pegawai' => $request->id_pegawai,
-                'id_jenis_diklat' => $request->id_jenis_diklat,
-                'id_diklat' => $request->id_diklat,
+                'id_jenis_diklat' => $diklat->id_jenis_diklat,
+                'id_diklat' => $diklat->id_diklat,
+                'nama_diklat' => $diklat->id_diklat === 1 ? strtoupper($request->nama_diklat) : $diklat->nama_diklat,
                 'tahun' => $request->tahun,
                 'tgl_mulai' => $request->tgl_mulai,
                 'tgl_selesai' => $request->tgl_selesai,
                 'tempat' => $request->tempat,
+                'jam_pelatihan' => $request->jam_pelatihan,
             ]);
+
+            if ($peserta->realisasi) {
+                if ($request->file('file_spt')) {
+                    File::delete('public/files/spt/' . $peserta->realisasi->file_spt);
+                    $file_spt = time() . '.' . $request->file_spt->extension();
+                    $request->file_spt->move(public_path('files/spt'), $file_spt);
+                } else {
+                    $file_spt = $peserta->realisasi->file_spt;
+                }
+
+                $peserta->realisasi()->update([
+                    'id_peserta' => $peserta->id_peserta,
+                    'no_spt' => $request->no_spt,
+                    'file_spt' => $file_spt,
+                    'anggaran' => $request->anggaran,
+                ]);
+            }
+
+            if ($peserta->sertifikat) {
+                if ($request->file('file_sertifikat')) {
+                    File::delete('public/files/sertifikat/' . $peserta->sertifikat->file_sertifikat);
+                    $file_sertifikat = time() . '.' . $request->file_sertifikat->extension();
+                    $request->file_sertifikat->move(public_path('files/sertifikat'), $file_sertifikat);
+                } else {
+                    $file_sertifikat = $peserta->sertifikat->file_sertifikat;
+                }
+
+                $peserta->sertifikat()->update([
+                    'id_peserta' => $peserta->id_peserta,
+                    'file_sertifikat' => $file_sertifikat,
+                ]);
+            }
+
+            if ($peserta->keteranganTolak) {
+                $peserta->keteranganTolak()->update([
+                    'id_peserta' => $peserta->id_peserta,
+                    'keterangan' => $request->keterangan,
+                ]);
+            }
 
             return response()->json(['success' => 'Successfully']);
         }
@@ -165,26 +206,24 @@ class PesertaController extends Controller
      */
     public function destroy($id)
     {
-        return abort('404');
-    }
-
-    public function terima(Request $request, $id)
-    {
         $peserta = Peserta::findOrFail($id);
-        $peserta->update([
-            'id_status' => 2,
-            'keterangan' => 'Diproses',
-        ]);
+        if ($peserta->id_status !== 4) {
+            return abort('404');
+        }
 
-        return redirect()->route('peserta.index')->with('success', 'Berhasil disimpan!');
+        $peserta->delete();
+
+        return redirect()->route('peserta.index')->with('success', 'Berhasil dihapus!');
     }
 
-    public function tolak(Request $request, $id)
+    public function verifikasi(Request $request, $id)
     {
         if ($request->ajax()) {
-
             $validator = Validator::make($request->all(), [
-                'keterangan' => 'required|string|max:255',
+                'no_spt' => $request->id_status == 2 ? 'required|string|max:255' : 'nullable|string|max:255',
+                'file_spt' => $request->id_status == 2 ? 'required|max:2048|mimes:pdf' : 'nullable|max:2048|mimes:pdf',
+                'anggaran' => $request->id_status == 2 ? 'required|numeric' : 'nullable|numeric',
+                'keterangan' => $request->id_status == 4 ? 'required|string|max:255' : 'nullable|string|max:255',
             ]);
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()->toArray()]);
@@ -192,13 +231,63 @@ class PesertaController extends Controller
 
             $peserta = Peserta::findOrFail($id);
             $peserta->update([
-                'id_status' => 4,
-                'keterangan' => $request->keterangan,
+                'id_status' => $request->id_status,
             ]);
+
+            if ($peserta->id_status == 2) {
+                if ($request->file('file_spt')) {
+                    $file_spt = time() . '.' . $request->file_spt->extension();
+                    $request->file_spt->move(public_path('files/spt'), $file_spt);
+                }
+
+                $peserta->realisasi()->updateOrCreate(['id_peserta' => $peserta->id_peserta], [
+                    'id_peserta' => $peserta->id_peserta,
+                    'no_spt' => $request->no_spt,
+                    'file_spt' => $file_spt,
+                    'anggaran' => $request->anggaran,
+                ]);
+            }
+
+            if ($peserta->id_status == 4) {
+                $peserta->keteranganTolak()->updateOrCreate(['id_peserta' => $peserta->id_peserta], [
+                    'id_peserta' => $peserta->id_peserta,
+                    'keterangan' => $request->keterangan
+                ]);
+            }
 
             return response()->json(['success' => 'Successfully']);
         }
 
         return redirect()->route('peserta.index')->with('success', 'Berhasil disimpan!');
+    }
+
+    public function sertifikat(Request $request, $id)
+    {
+        if ($request->ajax()) {
+            $validator = Validator::make($request->all(), [
+                'file_sertifikat' => 'required|max:2048|mimes:pdf',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['error' => $validator->errors()->toArray()]);
+            }
+
+            if ($request->file('file_sertifikat')) {
+                $file_sertifikat = time() . '.' . $request->file_sertifikat->extension();
+                $request->file_sertifikat->move(public_path('files/sertifikat'), $file_sertifikat);
+            }
+
+            $peserta = Peserta::findOrFail($id);
+            $peserta->update([
+                'id_status' => 3,
+            ]);
+
+            $peserta->sertifikat()->updateOrCreate(['id_peserta' => $peserta->id_peserta], [
+                'file_sertifikat' => $file_sertifikat,
+            ]);
+
+            return response()->json(['success' => 'Successfully']);
+        }
+
+        return redirect()->route('peserta.index')->with('success', 'Berhasil disimpan');
     }
 }

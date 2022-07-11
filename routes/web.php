@@ -11,7 +11,6 @@ use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\PangkatController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PesertaController;
-use App\Http\Controllers\RealisasiController;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -44,18 +43,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('/pegawai', PegawaiController::class);
         // Peserta
         Route::get('/peserta/{id}/detail', [PesertaController::class, 'show'])->name('peserta.detail');
-        Route::post('/peserta/{id}/terima', [PesertaController::class, 'terima'])->name('peserta.terima');
-        Route::post('/peserta/{id}/tolak', [PesertaController::class, 'tolak'])->name('peserta.tolak');
+        Route::post('/peserta/{id}/verifikasi', [PesertaController::class, 'verifikasi'])->name('peserta.verifikasi');
+        Route::post('/peserta/{id}/sertifikat', [PesertaController::class, 'sertifikat'])->name('peserta.sertifikat');
         Route::resource('/peserta', PesertaController::class)->except(['show']);
-        // Realisasi
-        Route::get('/realisasi', [RealisasiController::class, 'index'])->name('realisasi.index');
-        Route::get('/realisasi/{id}/edit', [RealisasiController::class, 'edit'])->name('realisasi.edit');
-        Route::put('/realisasi/{id}/update', [RealisasiController::class, 'update'])->name('realisasi.update');
-        Route::get('/realisasi/{id}/detail', [RealisasiController::class, 'show'])->name('realisasi.detail');
-        Route::post('/realisasi/{id}/store/spt', [RealisasiController::class, 'storeSPT'])->name('realisasi.store.spt');
-        Route::post('/realisasi/{id}/store/anggaran', [RealisasiController::class, 'storeAnggaran'])->name('realisasi.store.anggaran');
-        Route::post('/realisasi/{id}/store/sertifikat', [RealisasiController::class, 'storeSertifikat'])->name('realisasi.store.sertifikat');
-        Route::post('/realisasi/{id}/store/selesai', [RealisasiController::class, 'storeSelesai'])->name('realisasi.store.selesai');
         // Rekap
         Route::get('/rekap', [RekapController::class, 'index'])->name('rekap.index');
         Route::get('/rekap/{id}/detail', [RekapController::class, 'show'])->name('rekap.detail');
@@ -77,7 +67,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/diklatku/edit/{id}', [DiklatKuController::class, 'edit'])->name('diklatku.edit');
         Route::put('/diklatku/update/{id}', [DiklatKuController::class, 'update'])->name('diklatku.update');
         Route::get('/diklatku/detail/{id}', [DiklatKuController::class, 'show'])->name('diklatku.detail');
-        Route::post('/diklatku/store/sertifikat/{id}', [DiklatKuController::class, 'storeSertifikat'])->name('diklatku.store.sertifikat');
+        Route::post('/diklatku/sertifikat/{id}', [DiklatKuController::class, 'sertifikat'])->name('diklatku.sertifikat');
     });
     // Pengaturan Akun
     Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');

@@ -41,13 +41,13 @@ class Peserta extends Model
         return $this->hasOne(Realisasi::class, 'id_peserta', 'id_peserta');
     }
 
-    public function anggaran()
-    {
-        return $this->hasOne(Anggaran::class, 'id_peserta', 'id_peserta');
-    }
-
     public function sertifikat()
     {
         return $this->hasOne(Sertifikat::class, 'id_peserta', 'id_peserta');
+    }
+
+    public function keteranganTolak()
+    {
+        return $this->hasOne(KeteranganTolak::class, 'id_peserta', 'id_peserta');
     }
 }

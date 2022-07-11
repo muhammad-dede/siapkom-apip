@@ -29,8 +29,11 @@
                             <select class="form-control" name="nama_diklat" id="nama_diklat">
                                 <option value="">-- Diklat --</option>
                                 @foreach (refDiklat() as $row)
-                                    <option value="{{ $row->nama_diklat }}">{{ $row->nama_diklat }}</option>
+                                    @if ($row->id_diklat !== 1)
+                                        <option value="{{ $row->nama_diklat }}">{{ $row->nama_diklat }}</option>
+                                    @endif
                                 @endforeach
+                                <option value="LAINNYA">LAINNYA</option>
                             </select>
                         </div>
                         <div class="col-auto">

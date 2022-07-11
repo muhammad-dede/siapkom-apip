@@ -33,21 +33,22 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="id_jenis_diklat" class="form-label">Jenis Diklat</label>
-                                <select class="form-select" id="id_jenis_diklat" aria-label="Pilih" name="id_jenis_diklat">
-                                    <option value="" selected></option>
-                                    @foreach (refJenisDiklat() as $row)
-                                        <option value="{{ $row->id_jenis_diklat }}">
-                                            {{ $row->nama_jenis_diklat }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <small>Pilih jenis diklat untuk menampilkan nama diklat.</small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="id_diklat" class="form-label">Nama Diklat</label>
+                                <label for="id_diklat" class="form-label">Diklat</label>
                                 <select class="form-select select2" id="id_diklat" aria-label="Pilih" name="id_diklat">
+                                    <option value="" selected></option>
+                                    @foreach (refDiklat() as $row)
+                                        @if ($row->id_diklat !== 1)
+                                            <option value="{{ $row->id_diklat }}">
+                                                {{ $row->nama_diklat }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                    <option value="1">LAINNYA</option>
                                 </select>
+                            </div>
+                            <div class="mb-3" id="diklat_lainnya">
+                                <label for="nama_diklat" class="form-label">Nama Diklat</label>
+                                <input type="text" class="form-control" id="nama_diklat" name="nama_diklat" />
                             </div>
                             <div class="mb-3">
                                 <label for="tahun" class="form-label">Tahun</label>
@@ -70,9 +71,15 @@
                                     <input type="date" class="form-control" id="tgl_selesai" name="tgl_selesai" />
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="tempat" class="form-label">Tempat</label>
-                                <textarea class="form-control" name="tempat" id="tempat" cols="30" rows="3"></textarea>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="tempat" class="form-label">Tempat</label>
+                                    <input type="text" class="form-control" id="tempat" name="tempat" />
+                                </div>
+                                <div class="col">
+                                    <label for="jam_pelatihan" class="form-label">Jam Pelatihan</label>
+                                    <input type="number" class="form-control" id="jam_pelatihan" name="jam_pelatihan" />
+                                </div>
                             </div>
                             <div class="mt-3 border-top py-3">
                                 <button type="submit" id="btn-daftar" class="btn btn-primary me-2">Daftar</button>
@@ -91,46 +98,23 @@
         $(document).ready(function() {
             $('.select2').select2({
                 theme: "bootstrap-5",
-                width: '100%'
+                width: '100%',
             });
 
-            data_diklat();
+            diklat_lainnya();
 
-            $("#id_jenis_diklat").on("change", function() {
-                data_diklat();
-            });
-
-            function data_diklat() {
-                var id_jenis_diklat = $("#id_jenis_diklat").val();
-                if (id_jenis_diklat == "") {
-                    $("#id_diklat").prop('disabled', 'disabled');
-                    $('#id_diklat').empty();
+            function diklat_lainnya() {
+                var id_diklat = $("#id_diklat").val();
+                if (id_diklat === '1') {
+                    $('#diklat_lainnya').show();
                 } else {
-                    $("#id_diklat").prop('disabled', false);;
-                    $.ajax({
-                        url: "{{ route('peserta.create') }}",
-                        method: "GET",
-                        data: {
-                            id_jenis_diklat: id_jenis_diklat
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            if (response) {
-                                $('#id_diklat').empty();
-                                $('#id_diklat').append('<option hidden></option>');
-                                $.each(response, function(key, diklat) {
-                                    $('select[name="id_diklat"]').append('<option value="' +
-                                        diklat.id_diklat + '">' + diklat.nama_diklat +
-                                        '</option>'
-                                    );
-                                });
-                            } else {
-                                $('#id_diklat').empty();
-                            }
-                        }
-                    });
+                    $('#diklat_lainnya').hide();
                 }
             }
+
+            $('#id_diklat').on("change", function() {
+                diklat_lainnya();
+            });
 
             $("#form-pendaftaran").on("submit", function(event) {
                 event.preventDefault();

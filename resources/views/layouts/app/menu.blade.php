@@ -142,11 +142,12 @@
                     <i class="menu-icon tf-icons bx bx-list-ul"></i>
                     <div data-i18n="Peserta" class="me-3">Peserta</div>
                     @if (countPeserta() > 0)
-                        <span class="badge bg-danger">{{ countPeserta() }}</span>
+                        <span
+                            class="badge rounded-pill badge-center h-px-20 w-px-20 bg-label-danger">{{ countPeserta() }}</span>
                     @endif
                 </a>
             </li>
-            <li
+            {{-- <li
                 class="menu-item {{ Request::is('realisasi') || Request::is('realisasi/*/edit') || Request::is('realisasi/*/detail') ? 'active' : '' }}">
                 <a href="{{ route('realisasi.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-slideshow"></i>
@@ -155,7 +156,7 @@
                         <span class="badge bg-danger">{{ countRealisasi() }}</span>
                     @endif
                 </a>
-            </li>
+            </li> --}}
             <li
                 class="menu-item {{ Request::is('rekap') || Request::is('rekap/*/edit') || Request::is('rekap/*/detail') ? 'active' : '' }}">
                 <a href="{{ route('rekap.index') }}" class="menu-link">
